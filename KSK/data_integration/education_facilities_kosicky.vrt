@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OGRVRTDataSource>
+    <OGRVRTLayer name="education_facilities">
+        <SrcDataSource>CSV:/vsicurl/https://crinfo.iedu.sk/RISPortal/register/ExportCSV?id=1</SrcDataSource>
+        <!--Header=False-->
+        <SrcSQL>SELECT * FROM "ExportCSV?id=1" WHERE "Kraj"='Košický'</SrcSQL>
+        <Field name="EDUID" src="EDUID" type="String"/>
+        <Field name="KODSKO" src="KODSKO" type="String"/>
+        <Field name="ICO" src="ICO" type="String"/>
+        <Field name="Hierarchia" src="Hierarchia" type="String"/>
+        <Field name="DruhSaSZ" src="DruhSaSZ" type="String"/>
+        <Field name="DruhSaSZKod" src="DruhSaSZKod" type="Integer"/>
+        <Field name="TypSaSZ" src="TypSaSZ" type="String"/>
+        <Field name="TypSaSZKod" src="TypSaSZKod" type="String"/>
+        <Field name="TypSaSZSkratka" src="TypSaSZSkratka" type="String"/>
+        <Field name="Nazov" src="Nazov" type="String"/>
+        <Field name="NazovSkrateny" src="NazovSkrateny" type="String"/>
+        <Field name="Kraj" src="Kraj" type="String"/>
+        <Field name="Okres" src="Okres" type="String"/>
+        <Field name="Obec" src="Obec" type="String"/>
+        <Field name="Ulica" src="Ulica" type="String"/>
+        <Field name="SupisneCislo" src="SupisneCislo" type="String"/>
+        <Field name="OrientacneCislo" src="OrientacneCislo" type="String"/>
+        <Field name="PSC" src="PSC" type="String"/>
+        <Field name="DatumZriadenia" src="DatumZriadenia" type="Date"/>
+        <Field name="DatumZrusenia" src="DatumZrusenia" type="Date"/>
+        <Field name="FormaHospodarenia" src="FormaHospodarenia" type="String"/>
+        <Field name="FormaVlastnictva" src="FormaVlastnictva" type="String"/>
+        <Field name="Plnoorganizovana" src="Plnoorganizovana" type="String"/>
+        <Field name="Telefon" src="Telefon" type="String"/>
+        <Field name="Fax" src="Fax" type="String"/>
+        <Field name="Email" src="Email" type="String"/>
+        <Field name="Web" src="Web" type="String"/>
+        <Field name="Riaditel" src="Riaditel" type="String"/>
+    </OGRVRTLayer>
+</OGRVRTDataSource>

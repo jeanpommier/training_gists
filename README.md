@@ -1,2 +1,3 @@
-# training_gists
+# Training gists
+
 Code samples, used in trainings

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OGRVRTDataSource>
+    <OGRVRTUnionLayer name="dotacie_2020_merged">
+        <SourceLayerFieldName>source</SourceLayerFieldName>
+        <OGRVRTLayer name="KSK_dotacie_2020-KSK_dotacie1_2020">
+            <SrcDataSource relativeToVRT="1">KSK_dotacie_2020.xlsx</SrcDataSource>
+            <!--Header=False-->
+            <SrcLayer>KSK_dotacie1_2020</SrcLayer>
+            <SrcSQL>SELECT * FROM "KSK_dotacie1_2020" WHERE "Žiadateľ                             " != 'S p o l u'</SrcSQL>
+        </OGRVRTLayer>
+          <OGRVRTLayer name="KSK_dotacie_2020-KSK_dotacie2_2020">
+              <SrcDataSource relativeToVRT="1">KSK_dotacie_2020.xlsx</SrcDataSource>
+            <!--Header=False-->
+            <SrcLayer>KSK_dotacie2_2020</SrcLayer>
+            <SrcSQL>SELECT * FROM "KSK_dotacie2_2020" WHERE "Žiadateľ                             " != 'S p o l u'</SrcSQL>
+        </OGRVRTLayer>
+    </OGRVRTUnionLayer>
+</OGRVRTDataSource>

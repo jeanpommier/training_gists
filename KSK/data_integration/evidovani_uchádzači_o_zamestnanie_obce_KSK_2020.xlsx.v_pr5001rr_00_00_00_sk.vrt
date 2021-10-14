@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OGRVRTDataSource>
+    <OGRVRTLayer name="evidovani_uchadzaci">
+        <SrcDataSource relativeToVRT="1">evidovani_uchádzači_o_zamestnanie_obce_KSK_2020.xlsx</SrcDataSource>
+        <!--Header=False-->
+        <SrcLayer>v_pr5001rr_00_00_00_sk</SrcLayer>
+        <Field name="Obec" src="Obec" type="String"/>
+        <Field name="Kod_obce_IDN4" src="Kod_obce_IDN4" type="String"/>
+        <Field name="pocet_nezam_12_2020" src=" pocet_nezam_12_2020" type="Integer"/>
+        <Field name="pocet_obyv_12_2020" src="pocet_obyv_12_2020" type="Integer"/>
+        <Field name="Podiel" src="Podiel" type="Real"/>
+        <Field name="Podiel_perc" src="Podiel v %" type="Real"/>
+    </OGRVRTLayer>
+</OGRVRTDataSource>

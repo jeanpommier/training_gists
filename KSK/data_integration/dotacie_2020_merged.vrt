@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OGRVRTDataSource>
+    <OGRVRTUnionLayer name="dotacie_2020_merged">
+        <SourceLayerFieldName>source</SourceLayerFieldName>
+        <OGRVRTLayer name="KSK_dotacie_2020-KSK_dotacie1_2020">
+            <SrcDataSource relativeToVRT="1">KSK_dotacie_2020.xlsx</SrcDataSource>
+            <!--Header=False-->
+            <SrcLayer>KSK_dotacie1_2020</SrcLayer>
+            <SrcSQL>SELECT * FROM "KSK_dotacie1_2020" WHERE "Žiadateľ                             " != 'S p o l u'</SrcSQL>
+            <Field name="id" src="P.č." type="Integer"/>
+            <Field name="spis" src="SPIS" type="Integer"/>
+            <Field name="ziadatel" src="Žiadateľ                             " type="String"/>
+            <Field name="adresa" src="Adresa žiadateľa" type="String"/>
+            <Field name="okres" src="Okres" type="String"/>
+            <Field name="projekt" src="Projekt" type="String"/>
+            <Field name="cislo_zmluvy" src="Číslo zmluvy" type="Integer"/>
+            <Field name="celkove_naklady" src="Celkové náklady v €" type="Integer"/>
+            <Field name="pozadovana_dotacia" src="Požadovaná dotácia v €" type="Integer"/>
+            <Field name="ucel" src="Účel" type="String"/>
+            <Field name="schvalena_dotacia" src="Predsedom schválená dotácia v € r.2020" type="Integer"/>
+        </OGRVRTLayer>
+          <OGRVRTLayer name="KSK_dotacie_2020-KSK_dotacie2_2020">
+              <SrcDataSource relativeToVRT="1">KSK_dotacie_2020.xlsx</SrcDataSource>
+            <!--Header=False-->
+            <SrcLayer>KSK_dotacie2_2020</SrcLayer>
+            <SrcSQL>SELECT * FROM "KSK_dotacie2_2020" WHERE "Žiadateľ                             " != 'S p o l u'</SrcSQL>
+            <Field name="id" src="p.č." type="Integer"/>
+            <Field name="spis" src="SPIS" type="Integer"/>
+            <Field name="ziadatel" src="Žiadateľ                             " type="String"/>
+            <Field name="adresa" src="Adresa žiadateľa" type="String"/>
+            <Field name="okres" src="Okres" type="String"/>
+            <Field name="projekt" src="Projekt" type="String"/>
+            <Field name="cislo_zmluvy" src="číslo zmluvy" type="Integer"/>
+            <Field name="celkove_naklady" src="Celkové náklady v €" type="Integer"/>
+            <Field name="pozadovana_dotacia" src="Požadovaná dotácia v €" type="Integer"/>
+            <Field name="ucel" src="Účel" type="String"/>
+            <Field name="schvalena_dotacia" src="Zastupiteľstvom schválená dotácia v € 2020" type="Integer"/>
+            <Field name="cirkev" src="Cirkev" type="String"/>
+            <Field name="dotacia_do_nehnutelností" src="Dotácia do nehnuteľností" type="String"/>
+        </OGRVRTLayer>
+    </OGRVRTUnionLayer>
+</OGRVRTDataSource>

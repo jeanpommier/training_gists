@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OGRVRTDataSource>
+    <OGRVRTLayer name="mrc_ark_tab-mrc_ark_tab">
+        <SrcDataSource relativeToVRT="1">mrc_ark_tab.csv</SrcDataSource>
+        <!--Header=False-->
+        <SrcLayer>mrc_ark_tab</SrcLayer>
+        <Field name="id" src="id" type="String"/>
+        <Field name="kraj" src="Kraj" type="String"/>
+        <Field name="okres" src="Okres" type="String"/>
+        <Field name="obec" src="Obec" type="String"/>
+        <Field name="kod_obce" src="Kód obce" type="String"/>
+        <Field name="pocet_obyvatelov" src="Počet obyvateľov" type="Integer"/>
+        <Field name="frekvencia_vyvazania" src="Frekvencia vyvážania kontajneru za rok?" type="String"/>
+    </OGRVRTLayer>
+</OGRVRTDataSource>

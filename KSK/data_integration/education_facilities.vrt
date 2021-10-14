@@ -1,0 +1,9 @@
+
+  <?xml version="1.0" encoding="UTF-8"?>
+  <OGRVRTDataSource>
+      <OGRVRTLayer name="education_facilities">
+          <SrcDataSource>CSV:/vsicurl/https://crinfo.iedu.sk/RISPortal/register/ExportCSV?id=1</SrcDataSource>
+          <!--Header=False-->
+          <SrcLayer>ExportCSV?id=1</SrcLayer>
+      </OGRVRTLayer>
+  </OGRVRTDataSource>
