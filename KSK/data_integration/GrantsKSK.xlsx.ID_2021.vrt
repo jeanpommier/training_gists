@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OGRVRTDataSource>
+    <OGRVRTLayer name="jpommier_ksk_grants_2021">
+        <SrcDataSource relativeToVRT="1">GrantsKSK.xlsx</SrcDataSource>
+        <!--Header=True-->
+        <SrcSql dialect="sqlite">SELECT * FROM 'ID_2021' WHERE "Field2" != '' AND "Field8" != 'Okres'</SrcSql>
+        <Field name="cislo_ziadosti" src="Field1" type="String"/>
+        <Field name="predkladatel" src="Field2" type="String"/>
+        <Field name="statutar" src="Field3" type="String"/>
+        <Field name="nazov_projektu" src="Field4" type="String"/>
+        <Field name="oblast_podpory" src="Field5" type="String"/>
+        <Field name="lokalita" src="Field6" type="String"/>
+        <Field name="mesto_obec" src="Field7" type="String"/>
+        <Field name="okres" src="Field8" type="String"/>
+        <Field name="okres" src="Field9" type="String"/>
+        <Field name="ciel_projektu" src="Field12" type="String"/>
+        <Field name="celkove_opravnene_vydavky" src="Field13" type="Real"/>
+        <Field name="pozadovana_suma" src="Field14" type="Real"/>
+        <Field name="schvalena_suma" src="Field15" type="Real"/>
+        <GeometryType>wkbPoint</GeometryType>
+        <LayerSRS>EPSG:4326</LayerSRS>
+        <GeometryField encoding="PointFromColumns" x="Field11" y="Field10"/>
+    </OGRVRTLayer>
+</OGRVRTDataSource>
