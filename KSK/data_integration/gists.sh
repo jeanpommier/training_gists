@@ -21,12 +21,18 @@ curl -G "https://geocoder.geoportalksk.sk/search/" --data-urlencode "q=Banícke 
 https://geocoder.geoportalksk.sk/search/?q=Banícke námestie 441, Gelnica
 
 # Geocode a CSv file
-curl -o GrantsKSK_geo.csv -X POST -F data=@GrantsKSK.csv --form-string columns='Predkladateľ' --form-string encoding=windows-1250 https://geocoder.geoportalksk.sk/search/csv/
+curl -o GrantsKSK_geo.csv -X POST -F data=@c:\tmp\GrantsKSK.csv --form-string columns='Predkladateľ' --form-string encoding=windows-1250 https://geocoder.geoportalksk.sk/search/csv/
 
 
 #######################
 ## VRT
 #######################
+
+# SQL view for job_seekers data, in geoserver
+select t.*, geo.geom
+FROM training_di1.jpommier_job_seekers AS t
+LEFT JOIN training_di1.jpommier_admin_units_obce AS geo
+ON t.kod_obce_idn4::Integer = geo.idn4
 
 # For the VRT definition, see in this folder
 # Convert from VRT to CSV (to feed to geocoder). From the OSGEO4W shell:
