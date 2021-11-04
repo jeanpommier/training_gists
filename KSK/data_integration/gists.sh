@@ -81,3 +81,18 @@ CASE WHEN lower( "frekvencia_vyvazania" )  = 'n/a'
 THEN NULL
 ELSE to_int( "frekvencia_vyvazania" )
 END
+
+#######################
+## Workflows: automation
+#######################
+ogr2ogr education_facilities_kosicky.csv education_facilities_kosicky.vrt
+curl -o education_facilities_kosicky_geo.csv -X POST -F data=@education_facilities_kosicky.csv --form-string columns='Obec' --form-string columns='Ulica' --form-string columns='OrientacneCislo' --form-string columns='PSC' https://geocoder.geoportalksk.sk/search/csv/
+# Create a vrt file for the geocoded dataset. You can use https://raw.githubusercontent.com/jeanpommier/training_gists/main/KSK/data_integration/education_facilities_kosicky_geo.vrt
+ogr2ogr -lco SCHEMA=training_di1 -lco CREATE_SCHEMA=OFF -f PGDump /vsistdout/ education_facilities_kosicky_geo.vrt | psql -h postgis-userdb -d georchestra -U jpommier -f -
+
+# autopublish_education_facilities.sh script : see in this folder
+
+# automatictly run the script: use CRON
+crontab -e
+# and add the following line (runs once very 2 months: at 3:00 UTC on the first day of the month, every 2 months )
+0 3 1 */2 * bash -c /mnt/geoserver_geodata/users_data/jpommier/trainings/di1/autopublish_education_facilities.sh
