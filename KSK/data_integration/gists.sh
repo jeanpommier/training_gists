@@ -39,7 +39,7 @@ ON t.kod_obce_idn4::Integer = geo.idn4
 ogr2ogr education_facilities_kosicky.csv education_facilities_kosicky.vrt
 
 # geocode the file
-curl -o education_facilities_kosicky_geo.csv -X POST -F data=@education_facilities_kosicky.csv --form-string columns='Obec' --form-string columns='Ulica' --form-string columns='OrientacneCislo' --form-string postcode='PSC' https://geocoder.geoportalksk.sk/search/csv/
+curl -o education_facilities_kosicky_geo.csv -X POST -F data=@education_facilities_kosicky.csv --form-string columns='Obec' --form-string columns='Ulica' --form-string columns='OrientacneCislo' --form-string columns='PSC' https://geocoder.geoportalksk.sk/search/csv/
 
 
 #######################
