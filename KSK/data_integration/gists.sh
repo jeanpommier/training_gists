@@ -92,7 +92,16 @@ ogr2ogr -lco SCHEMA=training_di1 -lco CREATE_SCHEMA=OFF -f PGDump /vsistdout/ ed
 
 # autopublish_education_facilities.sh script : see in this folder
 
-# automatictly run the script: use CRON
+# configure your postgres password using .pgpass
+# In your home directory on the server (in putty)
+echo "postgis-userdb:5432:georchestra:yourusername:yoursupersecretpassword" > ~/.pgpass
+# and make it not readable by anyone else
+chmod 600 ~/.pgpass
+# and test it with psql
+psql -h postgis-userdb -d georchestra -U yourusername
+# should connect without asking for your password
+
+# automatically run the script: use CRON
 crontab -e
 # and add the following line (runs once very 2 months: at 3:00 UTC on the first day of the month, every 2 months )
 0 3 1 */2 * bash -c /mnt/geoserver_geodata/users_data/jpommier/trainings/di1/autopublish_education_facilities.sh
