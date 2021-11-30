@@ -20,7 +20,10 @@
         layers: [
           new ol.layer.Tile({
             title: 'Global Imagery',
-            source: new ol.source.OSM()
+      			source: new ol.source.TileWMS({
+      				url: 'https://apps.pigeosolutions.fr/geoserver/wms',
+      				params: {LAYERS: 'cqpgeom:bluemarble', TILED: true}
+      			})
           })
         ],
         view: new ol.View({

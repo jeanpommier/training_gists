@@ -1,0 +1,23 @@
+{
+	"name": "openlayers-workshop-en-vite",
+	"version": "1.0.0",
+	"scripts": {
+		"start": "vite",
+		"build": "vite build",
+		"serve": "vite preview"
+		},
+	"devDependencies": {
+		"vite": "^2.6.7",
+		"eslint": "^7.32.0",
+		"eslint-config-openlayers": "^15.1.0",
+		"serve-static": "^1.14.1",
+		"shx": "^0.3.3"
+		},
+	"dependencies": {
+		"ol": "latest",
+		"colormap": "^2.3.2",
+		"kompas": "^0.0.1",
+		"ol-hashed": "^2.1.0",
+		"ol-mapbox-style": "^6.4.2"
+		}
+}

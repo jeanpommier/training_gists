@@ -70,7 +70,10 @@ On part du fichier map.html suivant :
         layers: [
           new ol.layer.Tile({
             title: 'Global Imagery',
-            source: new ol.source.OSM()
+      			source: new ol.source.TileWMS({
+      				url: 'https://apps.pigeosolutions.fr/geoserver/wms',
+      				params: {LAYERS: 'cqpgeom:bluemarble', TILED: true}
+      			})
           })
         ],
         view: new ol.View({
@@ -83,4 +86,79 @@ On part du fichier map.html suivant :
     </script>
   </body>
 </html>
+```
+
+## Chapitre 4: [TP] workshop anglais
+Installer npm :
+```bash
+sudo apt update
+# nous avons besoin de la commande curl
+sudo apt install curl
+# On installe nvm, comme indiqué dans la doc
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+# et on demande a nvm de nous installer node (dernière version stable)
+nvm install 16.13.0
+```
+
+Créer une nouvelle config et copier les données du workshop anglais :
+```
+mkdir openlayers-workshop-en-vite
+cd openlayers-workshop-en-vite
+npx create-ol-app
+
+# On copie les fichiers du workshop :
+cp -r ../openlayers-workshop-en/{data,doc,examples,gitbook}
+```
+
+packages.json :
+```
+{
+	"name": "openlayers-workshop-en-vite",
+	"version": "1.0.0",
+	"scripts": {
+		"start": "vite",
+		"build": "vite build",
+		"serve": "vite preview"
+		},
+	"devDependencies": {
+		"vite": "^2.6.7",
+		"eslint": "^7.32.0",
+		"eslint-config-openlayers": "^15.1.0",
+		"serve-static": "^1.14.1",
+		"shx": "^0.3.3"
+		},
+	"dependencies": {
+		"ol": "latest",
+		"colormap": "^2.3.2",
+		"kompas": "^0.0.1",
+		"ol-hashed": "^2.1.0",
+		"ol-mapbox-style": "^6.4.2"
+		}
+}
+```
+
+
+vite.config.js :
+```
+export default {
+  build: {
+	sourcemap: true,
+  },
+  server: {
+    host: "0.0.0.0",
+		port: "1234"
+  }
+}
+```
+
+Déplacer les données dans un dossier `public`:
+```bash
+mkdir public
+mv data public/
+npm run build
+```
+
+Lancer un serveur web pour servir le contenu compilé :
+```bash
+docker run --rm --name nginx -v /home/jean/dev/webmapping/openlayers-workshop-en-vite/dist:/usr/share/nginx/html:ro -p 82:80 nginx
 ```
