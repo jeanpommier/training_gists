@@ -107,7 +107,7 @@ cd openlayers-workshop-en-vite
 npx create-ol-app
 
 # On copie les fichiers du workshop :
-cp -r ../openlayers-workshop-en/{data,doc,examples,gitbook}
+cp -r ../openlayers-workshop-en/{data,doc,examples,gitbook} .
 ```
 
 packages.json :
