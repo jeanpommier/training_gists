@@ -16,7 +16,7 @@ map.addLayer(clc2018);
 ```
 ## Chapitre 2: Améliorons la carte
 ```javascript
-controls: ol.control.defaults().extend([
+controls: ol.control.defaults.defaults().extend([
   new ol.control.ScaleLine(),
   new ol.control.MousePosition({
     coordinateFormat: ol.coordinate.createStringXY()
