@@ -8,7 +8,7 @@ PDF code blocks are deign to be read, while those, here, can safely be copy-past
 clc2018 = new ol.layer.Tile({
   title: 'CORINE Land Cover - France metropolitaine - 2018',
   source: new ol.source.TileWMS({
-    url: 'http://wxs.ign.fr/corinelandcover/geoportail/r/wms',
+    url: 'http://wxs.ign.fr/clc/geoportail/r/wms',
     params: {LAYERS: 'LANDCOVER.CLC18_FR', TILED: true}
   })
 })
