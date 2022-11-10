@@ -25,7 +25,7 @@ controls: ol.control.defaults.defaults().extend([
 ```
 
 ```javascript
-controls: ol.control.defaults().extend([
+controls: ol.control.defaults.defaults().extend([
   new ol.control.ScaleLine(),
   new ol.control.MousePosition({
     coordinateFormat: ol.coordinate.createStringXY(2),
@@ -43,7 +43,7 @@ controls: ol.control.defaults().extend([
 
 ## Chapitre 3: [TP] Workshop français
 ```
-docker run --rm --name nginx -v /home/jean/webmapping/openlayers-workshop-fr:/usr/share/nginx/html:ro -p 3000:80 nginx
+docker run --rm --name nginx -v ~/dev/webmapping/openlayers-workshop-fr:/usr/share/nginx/html:ro -p 3000:80 nginx
 ```
 
 On part du fichier map.html suivant :
@@ -51,6 +51,7 @@ On part du fichier map.html suivant :
 <!doctype html>
 <html lang="en">
   <head>
+    <meta charset="utf-8">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.1.0/ol.css" type="text/css">
     <style>
       #map {
@@ -70,7 +71,10 @@ On part du fichier map.html suivant :
         layers: [
           new ol.layer.Tile({
             title: 'Global Imagery',
-            source: new ol.source.OSM()
+            source: new ol.source.TileWMS({
+              url: 'https://apps.pigeosolutions.fr/geoserver/wms',
+              params: {LAYERS: 'cqpgeom:bluemarble', TILED: true}
+            })
           })
         ],
         view: new ol.View({
@@ -85,3 +89,7 @@ On part du fichier map.html suivant :
 </html>
 
 ```
+Puis on suit les instructions du [workshop français](https://openlayers.org/workshop/fr/) tout en gardant un oeil sur les changements précisés dans le support de cours.
+
+### Clef bingmap
+`AvLKZ87V5PHr45NASkZ6AgGUQkAJGwLsC8yJwyAdMQX5JLOYnyhTf1tl56jubs8v`
