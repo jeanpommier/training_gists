@@ -2,10 +2,17 @@
 
 ## Préparer les données
 Découper les données (vous devrez peut-être ajuster les chemins)
-Note : je ne traite pas le shapefile des buildings, car il est un peu trop gros, le traitement predrait trop de temps pour notre formation. Il est déjà dispo dans work/ariege-osm
+Note : je ne traite pas le shapefile des buildings, car il est un peu trop gros, le traitement prendrait trop de temps pour notre formation. Il est déjà dispo dans work/ariege-osm
 ```bash
 # on installe d'abord ogr2ogr
 sudo apt-get install gdal-bin
+
+# On extrait le tracé du département d'Ariège, à partir des données de la BDtopo
+7z e BDTOPO_3-0_TOUSTHEMES_SHP_LAMB93_D009_2021-09-15.7z BDTOPO_3-0_TOUSTHEMES_SHP_LAMB93_D009_2021-09-15/BDTOPO/1_DONNEES_LIVRAISON_2021-09-00165/BDT_3-0_SHP_LAMB93_D009-ED2021-09-15/ADMINISTRATIF/DEPARTEMENT.*
+mv DEPARTEMENT.* tmp/
+mkdir -p work
+ogr2ogr -where INSEE_DEP="09" work/contours_ariege.shp DEPARTEMENT.shp
+
 
 # on extrait l'archive dans un dossier temporaire
 mkdir -p tmp/midi-pyrenees-osm
@@ -71,6 +78,25 @@ Exemple de style (css) pour les lieux
 ```
 
 ## Raster
+### Manipulations  & optimisation de raster en ligne de commande
+Extraire un MNT restreint à l'emprise du département d'Ariège :
+```
+gdalwarp -cutline departement-ariege.shp -crop_to_cutline -dstalpha MNT/eu_dem_extract.tif MNT/eu_dem_09.tif
+```
+
+Inspecter un geotiff
+```
+gdalinfo eu_dem_09.tif
+```
+
+Optimiser un geotiff (tiled + overviews)
+```
+# Tiled structure + lossless compression
+gdal_translate -co "TILED=YES" -co COMPRESS=LZW eu_dem_09.tif eu_dem_09_tiled.tif
+# overviews
+gdaladdo -r average --config COMPRESS_OVERVIEW LZW eu_dem_09_tiled.tif 2 4 8 16 32
+```
+
 Extraire les lignes de niveau à partir du MNT, via GDAL
 ```
 gdal_contour -a ELEV -i 50 eu_dem_09.tif eu_dem_09_contours.shp

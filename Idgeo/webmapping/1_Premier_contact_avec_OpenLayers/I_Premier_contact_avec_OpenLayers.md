@@ -1,6 +1,7 @@
 **WebMapping training gists**
+
 Contains all code blocks provided in the PDF.
-PDF code blocks are deign to be read, while those, here, can safely be copy-pasted.
+PDF code blocks are designed to be read, while those, here, can safely be copy-pasted.
 
 # Partie 1: premier contact avec OpenLayers
 ## Chapitre 1: afficher des données
@@ -93,3 +94,16 @@ Puis on suit les instructions du [workshop français](https://openlayers.org/wor
 
 ### Clef bingmap
 `AvLKZ87V5PHr45NASkZ6AgGUQkAJGwLsC8yJwyAdMQX5JLOYnyhTf1tl56jubs8v`
+
+
+## Chapitre 4: [TP] Workshop anglais
+Installation de nvm
+```
+sudo apt update
+# nous avons besoin de la commande curl
+sudo apt install curl
+# On installe nvm, comme indiqué dans la doc
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash
+# et on demande à nvm de nous installer node (dernière version stable)
+nvm install 16.13.2
+```
