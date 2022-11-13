@@ -38,8 +38,20 @@ controls: ol.control.defaults.defaults().extend([
 ```
 
 ## Chapitre 3: [TP] Workshop français
+
 ```
-docker run --rm --name nginx -v ~/dev/webmapping/openlayers-workshop-fr:/usr/share/nginx/html:ro -p 3000:80 nginx
+# Copier notre version simplifiée du workshop français
+
+# chaque ligne commençant par # est un commentaire, qui n'est pas interprêté par la console
+# On copie sur Debian le dossier depuis le disque Windows (on suppose que vous avez copié mes fichiers dans \verb|D:\B2U6S23\sources\|)
+# On crée un dossier dev à la racine de notre compte debian, s'il n'existe pas déjà
+mkdir -p ~/dev/
+
+# Et on copie le dossier du workshop français (version modifiée par moi). Le chemin windows D:\B2U6S23\sources\ est visible comme /mnt/d/B2U6S23/sources depuis Debian
+cp -r /mnt/d/B2U6S23/sources/code/openlayers-workshop-fr/ ~/dev/
+
+# Et on lance un serveur http avec docker
+docker run --rm --name nginx -v ~/dev/openlayers-workshop-fr:/usr/share/nginx/html:ro -p 3000:80 nginx
 ```
 
 On part du fichier map.html suivant :
@@ -92,6 +104,22 @@ Puis on suit les instructions du [workshop français](https://openlayers.org/wor
 
 
 ## Chapitre 4: [TP] Workshop anglais
+En ligne de commande Debian, on peut facilement récupérer l'archive zip et la décompresser au même endroit :
+```
+# pré-requis : on install unzip si le paquet n'est pas déjà installé
+sudo apt install unzip
+
+# On se place au bon endroit
+cd ~/dev
+# On télécharge l'archive puis on la décompresse, et on efface l'archive, à présent inutile
+wget https://github.com/openlayers/workshop/releases/download/v7.0.0-en.1/openlayers-workshop-en.zip
+unzip openlayers-workshop-en.zip
+rm openlayers-workshop-en.zip
+
+# On se déplace dans le dossier du workshop
+cd openlayers-workshop-en
+```
+
 Installation de nvm
 ```
 sudo apt update
@@ -101,4 +129,10 @@ sudo apt install curl
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash
 # et on demande à nvm de nous installer node (dernière version stable)
 nvm install 16.13.2
+```
+
+Servir l'application en mode "production"
+```
+npm run build
+docker run --rm --name nginx -v ~/dev/openlayers-workshop-en/dist:/usr/share/nginx/html:ro -p 82:80 nginx
 ```
