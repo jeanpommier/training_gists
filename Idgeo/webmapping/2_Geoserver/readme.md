@@ -11,11 +11,12 @@ sudo apt-get install p7zip
 ##
 
 mkdir -p /mnt/d/B2U6S23/TP/ && cd /mnt/d/B2U6S23/TP/
-7zr e /mnt/d/B2U6S23/sources/donnees_tp/BDTOPO_3-0_TOUSTHEMES_SHP_LAMB93_D009_2021-09-15.7z BDTOPO_3-0_TOUSTHEMES_SHP_LAMB93_D009_2021-09-15/BDTOPO/1_DONNEES_LIVRAISON_2021-09-00165/BDT_3-0_SHP_LAMB93_D009-ED2021-09-15/ADMINISTRATIF/DEPARTEMENT.*
+7zr e /mnt/d/B2U6S23/donnees_tp/BDTOPO_3-0_TOUSTHEMES_SHP_LAMB93_D009_2021-09-15.7z BDTOPO_3-0_TOUSTHEMES_SHP_LAMB93_D009_2021-09-15/BDTOPO/1_DONNEES_LIVRAISON_2021-09-00165/BDT_3-0_SHP_LAMB93_D009-ED2021-09-15/ADMINISTRATIF/DEPARTEMENT.*
 # On inspecte la structure du shapefile
 ogrinfo -so -al DEPARTEMENT.shp
 #  Et on fait notre requête d'extraction
-ogr2ogr -where "INSEE_DEP='09'" contours_ariege.shp DEPARTEMENT.shp
+# On le reprojette en 4326 car il va nous servir pour découper des données en 4326, et la commande ogr2ogr clipsrc semble nécessiter la même projection que la donnée source (cf + bas)
+ogr2ogr -where "INSEE_DEP='09'" -s_srs EPSG:2154 -t_srs EPSG:4326 contours_ariege.shp DEPARTEMENT.shp
 # On nettoie
 rm DEPARTEMENT.*
 
@@ -28,7 +29,7 @@ sudo apt-get install gdal-bin
 
 # on extrait l'archive dans un dossier temporaire
 mkdir -p ~/tmp/midi-pyrenees-osm
-unzip /mnt/d/B2U6S23/sources/donnees_tp/midi-pyrenees-latest-free.shp.zip -d ~/tmp/midi-pyrenees-osm
+unzip /mnt/d/B2U6S23/donnees_tp/midi-pyrenees-latest-free.shp.zip -d ~/tmp/midi-pyrenees-osm
 
 # et on itère : pour chaque fichier du dossier temporaire, on le coupe
 # sur l'Ariège et on le sauve dans notre dossier destination
@@ -93,7 +94,7 @@ Exemple de style (css) pour les lieux
 ### Manipulations  & optimisation de raster en ligne de commande
 Extraire un MNT restreint à l'emprise du département d'Ariège :
 ```
-gdalwarp -cutline /mnt/d/B2U6S23/TP/contours_ariege.shp -crop_to_cutline -dstalpha /mnt/d/B2U6S23/sources/donnees_tp/eu_dem_extract.tif /mnt/d/B2U6S23/TP/eu_dem_09.tif
+gdalwarp -cutline /mnt/d/B2U6S23/TP/contours_ariege.shp -crop_to_cutline -dstalpha /mnt/d/B2U6S23/donnees_tp/eu_dem_extract.tif /mnt/d/B2U6S23/TP/eu_dem_09.tif
 ```
 
 Inspecter un geotiff
