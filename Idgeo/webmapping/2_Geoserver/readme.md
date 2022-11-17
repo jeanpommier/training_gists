@@ -32,12 +32,12 @@ unzip /mnt/d/B2U6S23/donnees_tp/midi-pyrenees-latest-free.shp.zip -d ~/tmp/midi-
 # sur l'Ariège et on le sauve dans notre dossier destination
 mkdir -p /mnt/d/B2U6S23/TP/ariege-osm && cd /mnt/d/B2U6S23/TP/ariege-osm
 for f in $(ls -Sr ~/tmp/midi-pyrenees-osm/*.shp) ; do
-	if [[ "$f" =~ "building" ]]; then
-		echo "Skipping $f (too big)"
-	else
-		echo "Clipping $f..." ;
-		ogr2ogr $(basename -- ${f%.*})_09.shp -clipsrc /mnt/d/B2U6S23/TP/contours_ariege.shp -lco ENCODING=UTF-8 $f
-	fi
+  if [[ "$f" =~ "building" ]]; then
+    echo "Skipping $f (too big)"
+  else
+    echo "Clipping $f..." ;
+    ogr2ogr $(basename -- ${f%.*})_09.shp -clipsrc /mnt/d/B2U6S23/TP/contours_ariege.shp -lco ENCODING=UTF-8 $f
+  fi
 done
 
 # et on nettoie
