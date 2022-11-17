@@ -42,6 +42,7 @@ done
 
 # et on nettoie
 rm -rf ~/tmp/midi-pyrenees-osm
+
 ```
 
 ## Publier un shapefile en base de données
