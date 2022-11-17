@@ -4,8 +4,8 @@
 Découper les données (vous devrez peut-être ajuster les chemins)
 Note : je ne traite pas le shapefile des buildings, car il est un peu trop gros, le traitement prendrait trop de temps pour notre formation. Il est déjà dispo dans donnees_tp/gis_osm_buildings_a_free_1_09.zip
 ```bash
-# on installe 7zip, qui va nous servir de suite
-sudo apt-get install p7zip
+# on installe 7zip, qui va nous servir de suite et gdal qui va nous fournir les commandes ogr un peu plus tard
+sudo apt-get install p7zip gdal-bin
 
 # On extrait le tracé du département d'Ariège, à partir des données de la BDtopo
 ##
@@ -24,9 +24,6 @@ rm DEPARTEMENT.*
 # Extraction des données OSM sur l'emprise de l'ariège
 ##
 
-# on installe d'abord ogr2ogr
-sudo apt-get install gdal-bin
-
 # on extrait l'archive dans un dossier temporaire
 mkdir -p ~/tmp/midi-pyrenees-osm
 unzip /mnt/d/B2U6S23/donnees_tp/midi-pyrenees-latest-free.shp.zip -d ~/tmp/midi-pyrenees-osm
@@ -35,13 +32,12 @@ unzip /mnt/d/B2U6S23/donnees_tp/midi-pyrenees-latest-free.shp.zip -d ~/tmp/midi-
 # sur l'Ariège et on le sauve dans notre dossier destination
 mkdir -p /mnt/d/B2U6S23/TP/ariege-osm && cd /mnt/d/B2U6S23/TP/ariege-osm
 for f in $(ls -Sr ~/tmp/midi-pyrenees-osm/*.shp) ; do
-if [[ "$f" =~ "building" ]]; then
-echo "Skipping $f (too big)"
-else
-echo "Clipping $f..." ;
-ogr2ogr $(basename -- ${f%.*})_09.shp \
--clipsrc /mnt/d/B2U6S23/TP/contours_ariege.shp -lco ENCODING=UTF-8 $f
-fi
+	if [[ "$f" =~ "building" ]]; then
+		echo "Skipping $f (too big)"
+	else
+		echo "Clipping $f..." ;
+		ogr2ogr $(basename -- ${f%.*})_09.shp -clipsrc /mnt/d/B2U6S23/TP/contours_ariege.shp -lco ENCODING=UTF-8 $f
+	fi
 done
 
 # et on nettoie
