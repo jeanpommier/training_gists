@@ -1,46 +1,45 @@
 # [TP] Simulation de montée des eaux
+## MNT
+### Préparation
 Extraire l'emprise du MNT sur la camargue
 ```bash
-gdaltindex emprise.shp eu_dem_camargue.tif
+# Découper notre MNT sur une emprise rectangulaire]
+gdal_translate -projwin 3730447 2359413 3957487 2229788 /mnt/d/B2U6S23/donnees_tp/eu_dem_extract.tif /mnt/d/B2U6S23/TP/eu_dem_camargue.tif
+# Et puis on l'optimise pour publication :
+# Tiled structure + lossless compression
+cd /mnt/d/B2U6S23/TP
+gdal_translate -co "TILED=YES" -co COMPRESS=LZW eu_dem_camargue.tif eu_dem_camargue_tiled.tif
+# overviews
+gdaladdo -r average --config COMPRESS_OVERVIEW LZW eu_dem_camargue_tiled.tif 2 4 8 16 32
+```
+On le copie puis on le publie dans GeoServer
+```
+cp eu_dem_camargue_tiled.tif ~/docker-compo-geoserver/geoserver_geodata/jpommier/
 ```
 
-Découper les données (vous devrez peut-être ajuster les chemins)
-```bash
-# on extrait l'archive dans un dossier temporaire
-mkdir -p tmp/languedoc-roussillon
-unzip OSM/languedoc-roussillon-latest-free.shp.zip -d tmp/languedoc-roussillon
+### Style
+Style dynamique : [voir ici](./dem_dynamic.sld)
 
-# et on itère : pour chaque fichier du dossier temporaire, on le coupe sur la
-# zone d'emprise du MNT et on le sauve dans notre dossier destination
-mkdir -p work/camargue-osm && cd work/camargue-osm
-for f in $(ls -Sr ../../tmp/languedoc-roussillon/*.shp) ; do \
-  if [[ "$f" =~ "building" ]]; then
-    echo "Skipping $f (too big)"
-  else
-    echo "Clipping $f..." ;
-	  ogr2ogr $(basename -- ${f%.*})_09.shp \
-		 -clipsrc ../../MNT/emprise.shp -lco ENCODING=UTF-8 $f
- fi
-done
+## Codons
+On va créer une coquille de départ pour notre code, comme la doc OpenLayers le propose dans le [quickstart](https://openlayers.org/doc/quickstart.html) :
+```
 
-# et on nettoie
-rm -rf tmp/languedoc-roussillon
 ```
 
 Configuration du MNT dans OpenLayers
 ```
 var dem = new TileLayer({
-            title: 'MNT Copernicus',
-            source: new TileWMS({
-              url: 'http://localhost:82/geoserver/wms',
-              params: {
-                LAYERS: 'cqpgeom:eu_dem_camargue',
-                TILED: false,
-                STYLES: 'dem_dynamic',
-                ENV: 'water:0'
-              }
-            })
-          })
+  title: 'MNT Copernicus',
+  source: new TileWMS({
+    url: 'http://localhost:82/geoserver/wms',
+    params: {
+      LAYERS: 'cqpgeom:eu_dem_camargue',
+      TILED: false,
+      STYLES: 'dem_dynamic',
+      ENV: 'water:0'
+    }
+  })
+});
 ```
 
 Ajouter un input de type *range* dans index.html
@@ -66,3 +65,5 @@ control.addEventListener('input', function() {
 control.value = 0;
 output.innerText = 0;
 ```
+
+Le contenu final de notre appli est fourni dans le dossier [code_fonctionnel](code_fonctionnel). A utiliser dans le contexte de notre appli codée avec npm.

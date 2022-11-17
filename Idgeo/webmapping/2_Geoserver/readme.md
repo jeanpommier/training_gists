@@ -94,7 +94,7 @@ Exemple de style (css) pour les lieux
 ### Manipulations  & optimisation de raster en ligne de commande
 Extraire un MNT restreint à l'emprise du département d'Ariège :
 ```
-gdalwarp -cutline /mnt/d/B2U6S23/TP/contours_ariege.shp -crop_to_cutline -dstalpha /mnt/d/B2U6S23/donnees_tp/eu_dem_extract.tif /mnt/d/B2U6S23/TP/eu_dem_09.tif
+gdalwarp -cutline /mnt/d/B2U6S23/TP/contours_ariege.shp -crop_to_cutline /mnt/d/B2U6S23/donnees_tp/eu_dem_extract.tif /mnt/d/B2U6S23/TP/eu_dem_09.tif
 ```
 
 Inspecter un geotiff
@@ -111,10 +111,79 @@ gdal_translate -co "TILED=YES" -co COMPRESS=LZW eu_dem_09.tif eu_dem_09_tiled.ti
 gdaladdo -r average --config COMPRESS_OVERVIEW LZW eu_dem_09_tiled.tif 2 4 8 16 32
 ```
 
+Exemple de style SLD pour MNT, avec inclusion d'un ombrage, directement dans le style
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<StyledLayerDescriptor xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml" xmlns:sld="http://www.opengis.net/sld" version="1.0.0">
+  <UserLayer>
+    <sld:LayerFeatureConstraints>
+      <sld:FeatureTypeConstraint/>
+    </sld:LayerFeatureConstraints>
+    <sld:UserStyle>
+      <sld:Name>eu_dem_09_tiled</sld:Name>
+      <sld:FeatureTypeStyle>
+        <sld:Rule>
+          <sld:RasterSymbolizer>
+            <sld:ColorMap type="ramp">
+              <sld:ColorMapEntry quantity="0" color="#457428"  label="0"/>
+              <sld:ColorMapEntry quantity="376.35934082031253" color="#54822b" label="377,3593"/>
+              <sld:ColorMapEntry quantity="377.35934082031253" color="#54822b" label="377,3593"/>
+              <sld:ColorMapEntry quantity="754.71868164062505" color="#648f2d" label="754,7187"/>
+              <sld:ColorMapEntry quantity="1132.0780224609375" color="#739d30" label="1132,0780"/>
+              <sld:ColorMapEntry quantity="1509.4373632812501" color="#83aa32" label="1509,4374"/>
+              <sld:ColorMapEntry quantity="1886.7967041015625" color="#92b835" label="1886,7967"/>
+              <sld:ColorMapEntry quantity="2264.156044921875" color="#a2c538" label="2264,1560"/>
+              <sld:ColorMapEntry quantity="2612.4877441406252" color="#b0d23a" label="2612,4877"/>
+              <sld:ColorMapEntry quantity="2902.76416015625" color="#bcdc3c" label="2902,7642"/>
+            </sld:ColorMap>
+            <ShadedRelief>
+              <BrightnessOnly />
+              <ReliefFactor>2</ReliefFactor>
+            </ShadedRelief>
+          </sld:RasterSymbolizer>
+        </sld:Rule>
+      </sld:FeatureTypeStyle>
+    </sld:UserStyle>
+  </UserLayer>
+</StyledLayerDescriptor>
+
+```
+
 Extraire les lignes de niveau à partir du MNT, via GDAL
 ```
 gdal_contour -a ELEV -i 50 eu_dem_09.tif eu_dem_09_contours.shp
 ```
+
+## Publier une donnée vectorielle comme Vector tiles
+### Configurer un service Vector tiles avec GeoServer
+1. Installer l'extension vectortiles dans GeoServer (fait, sur notre config, cf le docker-compose.yml)
+2. activer le cache sur cete couche de donnée dans GeoServer
+3. Dans la rubrique 'cache' de la config de la couche, cocher mapbox vectortiles
+C'est fait.
+
+Vous pouvez y accéder depuis QGIS, en ajoutant une source de données de type vector tiles. L'URL à fournir sera du type http://localhost:82/geoserver/gwc/service/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=jpommier:occsol&STYLE=&TILEMATRIX=EPSG:900913:{z}&TILEMATRIXSET=EPSG:900913&FORMAT=application/vnd.mapbox-vector-tile&TILECOL={x}&TILEROW={y}
+
+(ajuster l'hôte, le nom de la couche, et éventuellement le SRS)
+
+Vous pouvez aussi y accéder dans OpenLayers, cf
+- https://docs.geoserver.org/stable/en/user/extensions/vectortiles/tutorial.html
+- [les exemples OpenLayers](https://openlayers.org/en/latest/examples/?q=vector+tile)
+
+### Sans GeoServer
+Il existe un certain nombre de serveurs dédiés aux vector tiles. Si vous n'avez besoin que de vector tiles, cela peut être une excellente solution. En particulier, j'aime beaucoup pg_tileserv, simple et très performant.
+Pour ajouter un service pg_tileserv, vous pouvez ajouter le bloc de config suivant dans le docker-compose.yml (la config est assez basique, mais donne un point de départ)
+
+```
+  pg_tileserv:
+    image: pramsey/pg_tileserv:latest
+    depends_on:
+      - postgis
+    ports:
+      - 7800:7800
+    environment:
+      - DATABASE_URL=postgres://cqpgeom:pass@postgis/cqpgeom
+```
+
 
 ## Donnée tabulaire
 Faire une jointure (code SQL)
@@ -124,3 +193,62 @@ FROM public.subventions_dsil_2020 as data,
 		 public.communes_09 as geo
 WHERE data.code_commune_ou_epci = geo.insee_com
 ```
+
+## Migrer d'un GeoServer local à un GeoServer distant
+### Migrer les données
+#### Les fichiers
+Il suffit de les copier en respectant les mêmes chemins relatifs
+```
+scp -r ~/docker-compo-geoserver/geoserver_geodata/jpommier debian@sk2.pigeosolutions.fr:docker-compo-geoserver/geoserver_geodata/
+```
+#### Les données en BD
+On fait d'abord une sauvegarde locale. Pas de chance, notre version de psql est plus ancienne que celle de notre postgresql, donc on ne peut pas l'utiliser pour cela. On va lancer pg_dump *depuis* le conteneur postgis :
+
+Sur notre ordinateur, depuis Debian :
+```
+# On lance le pg_dump depuis le conteneur postgis
+docker-compose exec postgis pg_dump -U cqpgeom -d cqpgeom --schema=jpommier > dump_jpommier.sql
+
+# On va le compresser, pour un transfert plus rapide
+gzip -9 dump_jpommier.sql
+
+# Et on copie le fichier vers sk2
+scp dump_jpommier.sql.gz  debian@sk2.pigeosolutions.fr:
+```
+
+Pour la suite, on va opérer sur sk2. Ouvrez une 2e console debian, qu'on va garder ouverte sur sk2 un instant :
+```
+# se connecte sur sk2 en mode ligne de commande
+ssh debian@sk2.pigeosolutions.fr
+```
+Et sur sk2 :
+```
+# on dézippe le fichier
+gunzip dump_jpommier.sql.gz
+
+# Et on charge le dump dans la base
+psql -h localhost -p 5432 -d cqpgeom -U jpommier -f dump_jpommier.sql
+```
+Il y aura qq messages d'erreurs, c'est normal, le nom d'utilisateur est différent. Mais ça ne devrait pas affecter les données.
+
+### La config GeoServer
+On va devoir autoriser sur sk2 l'utilisateur debian à écrire dans le dossier docker-compo-geoserver/geoserver_datadir/workspaces/jpommier/. Sur notre console connectée sur sk2 :
+```
+# On rend debian propriétaire du dossier (ça ne tiendra pas dans la durée, mais ça fera l'affaire pour le temps de la migration)
+sudo chown -R debian docker-compo-geoserver/geoserver_datadir/workspaces/jpommier/
+# Et comme ça ne semble pas bien se mélanger avec des données différentes déjà publiées dans le workspace, on le vide du peu de config qu'on y avait déjà mis :
+sudo rm -rf  docker-compo-geoserver/geoserver_datadir/workspaces/jpommier/*
+```
+
+Puis on copie le workspace depuis notre ordi vers sk2
+```
+sudo scp -r ~/docker-compo-geoserver/geoserver_datadir/workspaces/jpommier/* debian@sk2.pigeosolutions.fr:docker-compo-geoserver/geoserver_datadir/workspaces/jpommier/
+```
+
+Enfin, le mot de passe de notre entrepôt postgis est encrypté et ne sera donc plus valide (clef d'encryption différente), il faut donc aller éditer le fichier datastore.xml correspondant et on efface le contenu de la balise `<passwd>` :
+```
+nano docker-compo-geoserver/geoserver_datadir/workspaces/jpommier/postgis_jpommier/datastore.xml
+```
+
+Pour recharger tout cela, il faut être administrateur de GeoServer. Ou redémarrer le conteneur (`docker-compose restart geoserver`)
+Et depuis l'interface graphique, on édite l'entrepôt postgis, on change utilisateur et mot de passe.

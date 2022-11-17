@@ -1,0 +1,10 @@
+@import "node_modules/ol/ol.css";
+
+html, body {
+  margin: 0;
+  height: 100%;
+}
+#map {
+  width: 1024px;
+  height: 512px;
+}
