@@ -23,7 +23,12 @@ Style dynamique : [voir ici](./dem_dynamic.sld)
 ## Codons
 On va créer une coquille de départ pour notre code, comme la doc OpenLayers le propose dans le [quickstart](https://openlayers.org/doc/quickstart.html) :
 ```
-
+mkdir -p ~/dev/
+cd ~/dev/
+npm create ol-app simu-crue
+cd simu-crue
+npm install
+npm start
 ```
 
 Configuration du MNT dans OpenLayers

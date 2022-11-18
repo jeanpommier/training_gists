@@ -1,4 +1,16 @@
 # [TP] Gestion d'incidents sur sentiers de randonnée
+
+On va créer une coquille de départ pour notre code, comme la doc OpenLayers le propose dans le [quickstart](https://openlayers.org/doc/quickstart.html) :
+```
+mkdir -p ~/dev/
+cd ~/dev/
+npm create ol-app rando-incidents
+cd rando-incidents
+npm install
+npm start
+```
+
+
 Ajouter la couche incidents, en mode WFS
 ```
 var incidentsSource = new VectorSource({
@@ -108,3 +120,10 @@ var insertWFS = function(f) {
 	});
 }
 ```
+
+Sauf qu'en dev, ça ne va pas marcher à cause des CORS, Cross Origin Request, un système destiné à protéger l'internaute de certains abus sur internet, mais nous compliquant bien la vie. Le plus simple en dev : utiliser un proxy de dev qui va masquer ce souci.
+
+On pourra utiliser [local-cors-proxy](https://www.npmjs.com/package/local-cors-proxy), un package npm pour cela. Et remplacer l'URL ci-dessus en correspondance.
+
+
+Le contenu final de notre appli est fourni dans le dossier [code_fonctionnel](code_fonctionnel). A utiliser dans le contexte de notre appli codée avec npm. Avec un local-cors-proxy installé et démarré.

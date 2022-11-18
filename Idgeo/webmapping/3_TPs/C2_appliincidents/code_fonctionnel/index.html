@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="https://openlayers.org/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Using OpenLayers with Vite</title>
+  </head>
+  <body>
+    <div id="map"></div>
+    <div id="controles">
+      <button type="button" id="btnDrawPoint">Signaler un incident</button>
+      <p id="modedemploi">Placez sur la carte l'emplacement à signaler.</p>
+      <div id="formContainer">
+        <h1>Incident</h1>
+        <p>Merci de préciser ici l'incident à signaler</p>
+         <form id='incidentForm' action="">
+         <ul>
+            <li>
+              <label>Position</label>
+              <input type="text" name="location" id="input_location"  readonly="readonly" value="" disabled />
+            </li>
+            <li>
+                <label>Type d'incident</label>
+                <select name="type" id="inc_type">
+                  <option value="tree">Arbre tombé</option>
+                  <option value="rockfall">Chute de cailloux</option>
+                  <option value="aliens">Invasion d'aliens</option>
+                </select>
+            </li>
+            <li>
+                <label>Commentaires</label>
+                <textarea name="comments" rows="2" id="inc_desc"></textarea>
+            </li>
+            <li>
+              <button type="button" id="btnSubmit">Envoyer</button>
+              <button type="button" id="btnCancel">Annuler</button>
+            </li>
+          </ul>
+          </form>
+        </div>
+      </div>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
