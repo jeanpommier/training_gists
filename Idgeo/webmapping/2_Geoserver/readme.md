@@ -52,6 +52,8 @@ sudo apt install postgresql-client
 # Et on pousse la couche des routes
 ogr2ogr -f PGDUMP -nln roads -nlt PROMOTE_TO_MULTI /vsistdout/ /mnt/d/B2U6S23/TP/ariege-osm/gis_osm_roads_free_1_09.shp | psql -h localhost -p 5433 -d cqpgeom -U cqpgeom -f -
 
+SCH=yourusername
+ogr2ogr -f PGDUMP -nln roads -lco SCHEMA=$SCH -nlt PROMOTE_TO_MULTI /vsistdout/ /mnt/d/B2U6S23/TP/ariege-osm/gis_osm_roads_free_1_09.shp | psql -h localhost -p 5433 -d cqpgeom -U cqpgeom -f -
 
 # alternatively, you can do
 # shp2pgsql -s 4326 -c -k -W UTF-8 -I /mnt/d/B2U6S23/TP/ariege-osm/gis_osm_roads_free_1_09.shp roads \
