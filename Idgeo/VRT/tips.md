@@ -28,13 +28,9 @@ uconv -f windows-1252 -o monfichier-utf8.csv monfichier.csv
 
 ## Publier un fichier en BD avec ogr
 ```
-# On met le nom du schéma en variable
-SCH=yourusername
+# Ou bien on utilise le driver PostgreSQL d'OGR
+ogr2ogr -f "PostgreSQL" -nln "roads" -nlt PROMOTE_TO_MULTI -lco OVERWRITE=YES -lco SCHEMA=yourusername PG:"dbname='cqpgeom' host='localhost' port='5433' user='cqpgeom' password='pass'" roads.vrt
 
 # Ou bien on passe par un dump PG (utile dans certains cas)
-ogr2ogr -f PGDUMP -nln roads -lco PG_USE_COPY=YES -lco SCHEMA=$SCH -nlt PROMOTE_TO_MULTI /vsistdout/ roads.vrt | psql -h localhost -p 5433 -d cqpgeom -U cqpgeom -f -
-
-
-# Ou bien on utilise le driver PostgreSQL d'OGR
-ogr2ogr -f "PostgreSQL" -nln "roads" -nlt PROMOTE_TO_MULTI -lco PG_USE_COPY=YES -lco SCHEMA=$SCH PG:"dbname='cqpgeom' host='localhost' port='5433' user='cqpgeom' password='pass'" roads.vrt
+ogr2ogr -f PGDUMP -nln roads -lco PG_USE_COPY=YES -lco SCHEMA=yourusername -nlt PROMOTE_TO_MULTI /vsistdout/ roads.vrt | psql -h localhost -p 5433 -d cqpgeom -U cqpgeom -f -
 ```
