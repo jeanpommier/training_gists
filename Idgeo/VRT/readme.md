@@ -13,21 +13,21 @@ Pour comparer, vous pouvez aussi utiliser le script [ogr2vrt_simple](https://git
 
 *Pour la suite, vous aurez toujours le choix : utiliser le script et votre clavier, ou l'interface graphique et la souris.*
 
-Retoucher un peu le VRT si nécessaire pour le rendre plus compatible avec les contraintes d'une base de données, puis le publier en base. Là encore, vous avez le choix : le publier via QGIS et son database manager (lent), ou bien utiliser [ogr2ogr](./tips/md)
+Retoucher un peu le VRT si nécessaire pour le rendre plus compatible avec les contraintes d'une base de données, puis le publier en base. Là aussi, vous avez le choix : le publier via QGIS et son database manager (lent) ou bien utiliser [ogr2ogr](./tips/md)
 
-On va aussi publier en BD les contours des départements, pour pouvoir faire une jointure, et configurer un rendu carto dans GeoServer (sans s'attarder sur GeoServer, ce n'est pas le sujet du jour).
+On va aussi publier en BD les contours des départements, pour pouvoir faire une jointure. On n'a pas encore vu les serveurs carto, donc on fera le rendu dans QGIS. Faites-nous une jolie carte mettant en évidence les départmeents les mieux dotés en subventions.
 
 _Attention :_  pour la jointure, vous allez avoir un pb avec les numéros de départements. Pourquoi ?
 
-C'est une erreur classique, qu'il est important de avoir résoudre. On peut le faire à différents niveaux. Dans ce cas ci, on va le faire côté postgresql.
+C'est une erreur classique, qu'il est important de avoir résoudre. On peut le faire à différents niveaux. Dans ce cas ci, on va le faire côté postgresql. Il existe une commande LPAD qui devrait faire votre affaire.
 
 ## Exercice 2 : filtrer le contenu à publier
-On peut utiliser https://www.data.gouv.fr/fr/datasets/consommation-annuelle-delectricite-et-gaz-par-commune-et-par-secteur-dactivite/. On prendra le fichier CSV (le premier)
+On peut utiliser https://www.data.gouv.fr/fr/datasets/surfaces-cheptels-et-nombre-doperateurs-bio-a-la-commune/. On va publier une carte montrant la proportion occupée par la production agricole bio par rapport à la surface totale, pour chaque commune du Gers, en 2020.
 
-Créer un fichier VRT par le moyen de votre choix, puis éditez-le dans un éditeur de texte.
+Créez un fichier VRT par le moyen de votre choix, puis éditez-le dans un éditeur de texte.
 
-- Première étape : on filtre les entrées pour le garder que les données sur l'Ariège. On utilisera une source SrcSql pour cela
-- Deuxième étape : ne garde que les colonnes liées à la conso résidentielle
+- Première étape : on filtre les entrées pour ne garder que les données sur le Gers (32). On utilisera une source SrcSql pour cela
+- Deuxième étape : ne garde que les colonnes liées à 2020
 - On vérifie bien le résultat
 - Et puis on publie
 - puis jointure et affichage carto
@@ -38,7 +38,7 @@ On va prendre https://www.data.gouv.fr/fr/datasets/boursiers-par-departement/, l
 
 On va corriger le code de département dans le VRT directement.
 
-On a vu en exercice un comment faire ça dans PostgreSQL. C'est assez facile. Mais ça serait plus satisfaisant de le faire dès le VRT. Malheureusement, la commande LPAD ne marchera pas. En effet, dans VRT, c'est une syntaxe sqlite qui est utilisée (et encore, pas complète, ou alors pas récente).
+On a vu en exercice 1 comment faire ça dans PostgreSQL. C'est assez facile. Mais ça serait plus satisfaisant de le faire dès le VRT. Malheureusement, la commande LPAD ne marchera pas. En effet, dans VRT, c'est une syntaxe sqlite qui est utilisée (et encore, pas complète, ou alors pas récente).
 Le mieux que j'aie trouvé, c'est la syntaxe suivante : `printf("%02d", "numero_departement") AS code_dep`
 
 
@@ -73,12 +73,24 @@ Données dispo dans le dossier [union](./union). Vous pouvez les télécharger v
 
 Il y a plein de façons d'automatiser un flux de publication. Nous allons rester sur un cas de figure assez simple : actualisation régulière d'une donnée via une tâche planifiée (crontab) sur un serveur linux.
 
-Nous utiliserons la donnée de l'exerice 5. Et nous allons configurer ça sur le serveur sk2.
+Nous utiliserons la donnée de l'exercice 5. A défaut d'accéder à un serveur, on va activer temporairement cron sur votre instance WSL2. Dans une console linux : 
+```
+# On regarde si cron tourne (en principe non)
+sudo service cron status
+# S'il n'est en effet pas activé, on le démarre
+sudo service cron start
+```
+
+Vous avez noté la commande utilisée pour la publication de l'exercice 5 ? Allez, on l'automatise.
 
 Pouvez-vous pensez à d'autre scenari possibles/souhaitables ?
 
 ## Exercice 8 : faisons une 'appli' basique de crowdsourcing
-Google Sheet est capable d'exposer son contenu sur le web au format CSV (Fichier->Partager->Publier sur le web).
+Google Sheet est capable d'exposer son contenu sur le web au format CSV : Fichier->Partager->Publier sur le web. Il faut bien faire attention à 
+- définir un lien pour le document complet, pas juste la feuille
+- choisir un format CSV
+- activer la publication
+
 Nous allons utiliser une feuille Google Sheet pour collecter des observations d'ours sur l'Ariège
 - J'ai créé une feuille, sur laquelle vous pouvez saisir vos observations de plantigrades : https://docs.google.com/spreadsheets/d/1S5FwbLntADv9ztYlmUrHw83PFOyWCycM5WD8308ttBo/edit?usp=sharing
 - Créer le fichier VRT qui permet de publier cette donnée
@@ -98,3 +110,9 @@ On peut regarder qq cas concrets dans lesquels le VRT m'a bien servi et fait gag
 Combiné à un peu de code python, on peut faire des miracles en termes de traitement de données.
 
 Ah, et j'oubliais : notez dans la doc de vrt2rdf comment on peut même [pointer vers une source WFS](https://github.com/pi-geosolutions/vrt2rdf#connect-any-data-source-using-the-vrt)
+
+## Nettoyage
+Avant de quitter votre ordi, prenez le temps de stopper votre service cron : dans une console WSL2, lancez la commande
+```
+sudo service cron stop
+```
