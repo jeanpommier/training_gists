@@ -9,39 +9,41 @@ sudo apt-get install p7zip gdal-bin
 
 # On extrait le tracé du département d'Ariège, à partir des données de la BDtopo
 ##
+export SRC_DIR=/mnt/d/A5S5/sources
+export WORK_DIR=/mnt/d/A5S5/TP
 
-mkdir -p /mnt/d/B2U6S23/TP/ && cd /mnt/d/B2U6S23/TP/
-7zr e /mnt/d/B2U6S23/donnees_tp/BDTOPO_3-0_TOUSTHEMES_SHP_LAMB93_D009_2021-09-15.7z BDTOPO_3-0_TOUSTHEMES_SHP_LAMB93_D009_2021-09-15/BDTOPO/1_DONNEES_LIVRAISON_2021-09-00165/BDT_3-0_SHP_LAMB93_D009-ED2021-09-15/ADMINISTRATIF/DEPARTEMENT.*
+mkdir -p $WORK_DIR && cd $WORK_DIR
+7zr e $SRC_DIR/donnees_tp/BDTOPO_3-0_TOUSTHEMES_SHP_LAMB93_D009_2021-09-15.7z BDTOPO_3-0_TOUSTHEMES_SHP_LAMB93_D009_2021-09-15/BDTOPO/1_DONNEES_LIVRAISON_2021-09-00165/BDT_3-0_SHP_LAMB93_D009-ED2021-09-15/ADMINISTRATIF/DEPARTEMENT.*
 # On inspecte la structure du shapefile
 ogrinfo -so -al DEPARTEMENT.shp
 #  Et on fait notre requête d'extraction
 # On le reprojette en 4326 car il va nous servir pour découper des données en 4326, et la commande ogr2ogr clipsrc semble nécessiter la même projection que la donnée source (cf + bas)
-ogr2ogr -where "INSEE_DEP='09'" -s_srs EPSG:2154 -t_srs EPSG:4326 contours_ariege.shp DEPARTEMENT.shp
+ogr2ogr -where "INSEE_DEP='09'" -s_srs EPSG:2154 -t_srs EPSG:4326 $WORK_DIR/contours_ariege.shp $WORK_DIR/DEPARTEMENT.shp
 # On nettoie
-rm DEPARTEMENT.*
+rm $WORK_DIR/DEPARTEMENT.*
 
 
 # Extraction des données OSM sur l'emprise de l'ariège
 ##
 
 # on extrait l'archive dans un dossier temporaire
-mkdir -p ~/tmp/midi-pyrenees-osm
-unzip /mnt/d/B2U6S23/donnees_tp/midi-pyrenees-latest-free.shp.zip -d ~/tmp/midi-pyrenees-osm
+mkdir -p $WORK_DIR/midi-pyrenees-osm
+unzip $SRC_DIR/donnees_tp/midi-pyrenees-latest-free.shp.zip -d $WORK_DIR/midi-pyrenees-osm
 
 # et on itère : pour chaque fichier du dossier temporaire, on le coupe
 # sur l'Ariège et on le sauve dans notre dossier destination
-mkdir -p /mnt/d/B2U6S23/TP/ariege-osm && cd /mnt/d/B2U6S23/TP/ariege-osm
-for f in $(ls -Sr ~/tmp/midi-pyrenees-osm/*.shp) ; do
+mkdir -p $WORK_DIR/ariege-osm && cd $WORK_DIR/ariege-osm
+for f in $(ls -Sr $WORK_DIR/midi-pyrenees-osm/*.shp) ; do
   if [[ "$f" =~ "building" ]]; then
     echo "Skipping $f (too big)"
   else
     echo "Clipping $f..." ;
-    ogr2ogr $(basename -- ${f%.*})_09.shp -clipsrc /mnt/d/B2U6S23/TP/contours_ariege.shp -lco ENCODING=UTF-8 $f
+    ogr2ogr $(basename -- ${f%.*})_09.shp -clipsrc $WORK_DIR/contours_ariege.shp -lco ENCODING=UTF-8 $f
   fi
 done
 
 # et on nettoie
-rm -rf ~/tmp/midi-pyrenees-osm
+rm -rf $WORK_DIR/midi-pyrenees-osm
 
 ```
 
@@ -50,13 +52,11 @@ rm -rf ~/tmp/midi-pyrenees-osm
 # On installe psql
 sudo apt install postgresql-client
 # Et on pousse la couche des routes
-ogr2ogr -f PGDUMP -nln roads -nlt PROMOTE_TO_MULTI /vsistdout/ /mnt/d/B2U6S23/TP/ariege-osm/gis_osm_roads_free_1_09.shp | psql -h localhost -p 5433 -d cqpgeom -U cqpgeom -f -
-
 SCH=yourusername
-ogr2ogr -f PGDUMP -nln roads -lco SCHEMA=$SCH -nlt PROMOTE_TO_MULTI /vsistdout/ /mnt/d/B2U6S23/TP/ariege-osm/gis_osm_roads_free_1_09.shp | psql -h localhost -p 5433 -d cqpgeom -U cqpgeom -f -
+ogr2ogr -f PGDUMP -nln roads -lco SCHEMA=$SCH -nlt PROMOTE_TO_MULTI /vsistdout/ $WORK_DIR/ariege-osm/gis_osm_roads_free_1_09.shp | psql -h localhost -p 5433 -d cqpgeom -U cqpgeom -f -
 
 # alternatively, you can do
-# shp2pgsql -s 4326 -c -k -W UTF-8 -I /mnt/d/B2U6S23/TP/ariege-osm/gis_osm_roads_free_1_09.shp roads \
+# shp2pgsql -s 4326 -c -k -W UTF-8 -I $WORK_DIR/ariege-osm/gis_osm_roads_free_1_09.shp roads \
 #   | psql -h localhost -p 5433 -U cqpgeom -W -d cqpgeom
 
 ```
@@ -96,17 +96,17 @@ Exemple de style (css) pour les lieux
 ### Manipulations  & optimisation de raster en ligne de commande
 Extraire un MNT restreint à l'emprise du département d'Ariège :
 ```
-gdalwarp -cutline /mnt/d/B2U6S23/TP/contours_ariege.shp -crop_to_cutline /mnt/d/B2U6S23/donnees_tp/eu_dem_extract.tif /mnt/d/B2U6S23/TP/eu_dem_09.tif
+gdalwarp -cutline /mnt/d/A5S5/TP/contours_ariege.shp -crop_to_cutline /mnt/d/A5S5/donnees_tp/eu_dem_extract.tif /mnt/d/A5S5/TP/eu_dem_09.tif
 ```
 
 Inspecter un geotiff
 ```
-gdalinfo /mnt/d/B2U6S23/TP/eu_dem_09.tif
+gdalinfo /mnt/d/A5S5/TP/eu_dem_09.tif
 ```
 
 Optimiser un geotiff (tiled + overviews)
 ```
-cd /mnt/d/B2U6S23/TP/
+cd /mnt/d/A5S5/TP/
 # Tiled structure + lossless compression
 gdal_translate -co "TILED=YES" -co COMPRESS=LZW eu_dem_09.tif eu_dem_09_tiled.tif
 # overviews
@@ -183,7 +183,7 @@ Pour ajouter un service pg_tileserv, vous pouvez ajouter le bloc de config suiva
     ports:
       - 7800:7800
     environment:
-      - DATABASE_URL=postgres://cqpgeom:pass@postgis/cqpgeom
+      - DATABASE_URL=postgres://cpgeom:pass@postgis/cpgeom
 ```
 
 
