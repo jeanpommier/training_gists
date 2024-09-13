@@ -112,6 +112,10 @@ gdal_translate -co "TILED=YES" -co COMPRESS=LZW eu_dem_09.tif eu_dem_09_tiled.ti
 # overviews
 gdaladdo -r average --config COMPRESS_OVERVIEW LZW eu_dem_09_tiled.tif 2 4 8 16 32
 ```
+**Ou mieux, on fait direct un COG :**
+```
+gdal_translate -of COG -co COMPRESS=LZW -co BLOCKSIZE=512 -co BIGTIFF=IF_SAFER -co RESAMPLING=AVERAGE -co OVERVIEW_COMPRESS=LZW  eu_dem_09.tif eu_dem_cog.tif
+```
 
 Exemple de style SLD pour MNT, avec inclusion d'un ombrage, directement dans le style
 ```
