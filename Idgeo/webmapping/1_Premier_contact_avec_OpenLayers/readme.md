@@ -1,7 +1,7 @@
 # Partie 1: premier contact avec OpenLayers
 ## Chapitre 1: afficher des données
 ```javascript
-clc2018 = new ol.layer.Tile({
+var clc2018 = new ol.layer.Tile({
   title: 'CORINE Land Cover - France metropolitaine - 2018',
   source: new ol.source.TileWMS({
     url: 'http://wxs.ign.fr/clc/geoportail/r/wms',
@@ -60,7 +60,7 @@ On part du fichier map.html suivant :
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.1.0/ol.css" type="text/css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v10.1.0/ol.css" type="text/css">
     <style>
       #map {
         height: 256px;
@@ -68,7 +68,7 @@ On part du fichier map.html suivant :
       }
     </style>
     <title>OpenLayers quickstart</title>
-    <script src="https://cdn.jsdelivr.net/npm/ol@v7.1.0/dist/ol.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ol@v10.1.0/dist/ol.js"></script>
   </head>
   <body>
     <h1>Ma carte</h1>
@@ -126,9 +126,9 @@ sudo apt update
 # nous avons besoin de la commande curl
 sudo apt install curl
 # On installe nvm, comme indiqué dans la doc
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 # et on demande à nvm de nous installer node (dernière version stable)
-nvm install 16.13.2
+nvm install lts
 ```
 
 Servir l'application en mode "production"

@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.1.0/ol.css" type="text/css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v10.1.0/ol.css" type="text/css">
     <style>
       .map {
         height: 400px;
@@ -13,7 +13,7 @@
         padding: 5px;
       }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/ol@v7.1.0/dist/ol.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ol@v10.1.0/dist/ol.js"></script>
     <title>OpenLayers example</title>
   </head>
   <body>
@@ -39,7 +39,7 @@
           })
         ])
       });
-      clc2018 = new ol.layer.Tile({
+      var clc2018 = new ol.layer.Tile({
         title: 'CORINE Land Cover - France metropolitaine - 2018',
         source: new ol.source.TileWMS({
           url: 'http://wxs.ign.fr/corinelandcover/geoportail/r/wms',
