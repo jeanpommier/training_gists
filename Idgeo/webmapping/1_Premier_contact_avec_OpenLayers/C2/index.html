@@ -31,7 +31,7 @@
           center: ol.proj.fromLonLat([37.41, 8.82]),
           zoom: 4
         }),
-        controls: ol.control.defaults().extend([
+        controls: ol.control.defaults.defaults().extend([
           new ol.control.ScaleLine(),
           new ol.control.MousePosition({
             coordinateFormat: ol.coordinate.createStringXY(2),

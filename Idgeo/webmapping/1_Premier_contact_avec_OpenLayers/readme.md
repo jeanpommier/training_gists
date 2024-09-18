@@ -107,7 +107,7 @@ Puis on suit les instructions du [workshop français](https://openlayers.org/wor
 En ligne de commande Debian, on peut facilement récupérer l'archive zip et la décompresser au même endroit :
 ```
 # pré-requis : on install unzip si le paquet n'est pas déjà installé
-sudo apt install unzip
+sudo apt install unzip wget
 
 # On se place au bon endroit
 cd ~/dev
@@ -127,8 +127,13 @@ sudo apt update
 sudo apt install curl
 # On installe nvm, comme indiqué dans la doc
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+# On exécute les ligne que nous donne nvm à l'installation. A priori, ça sera : 
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  
+
 # et on demande à nvm de nous installer node (dernière version stable)
-nvm install lts
+nvm install --lts
 ```
 
 Servir l'application en mode "production"
